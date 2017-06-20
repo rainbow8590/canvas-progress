@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>进度条 -- 圆环形状</title>
+	<style>
+	*{margin: 0;padding: 0;}
+	canvas{background: #fff;}
+	</style>
+</head>
+<body>
+	<canvas id="canvas"></canvas>
+	<script>
+
+var canvas = document.getElementById('canvas');
+var ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+
+function draw(){
+	//底层圆
+	round('#E6EAED',100,'#E6EAED')
+	//中白圆
+	round('#fff',84,'#fff')
+	//中灰圆
+	round('#E6EAED',74,'#fff')
+	//小白圆
+	round('#fff',70,'#fff')	
+}
+function round(color,r,color1){
+	ctx.save();
+	ctx.beginPath();
+	ctx.fillStyle = color
+	ctx.shadowOffsetX = 0
+	ctx.shadowOffsetY = 0
+	ctx.shadowBlur = 10;
+	ctx.shadowColor = color1
+	ctx.arc(canvas.width/2,canvas.height/2,r,0,Math.PI*2)
+	ctx.fill()
+	ctx.restore();
+}
+
+
+//进度 圆弧
+var deg  = 0;
+var ang = 0
+var num = 0;
+setInterval(function(){
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	draw()
+	deg+=1;
+	if(deg >= 360){
+		deg = 360
+	}
+	//创建渐变
+	var radial = ctx.createRadialGradient(canvas.width/2,canvas.height/2,120,canvas.width/2-140,canvas.width/2,160)
+	radial.addColorStop(0,'#83C9F3');
+	radial.addColorStop(1,'#1381C1');
+	ctx.strokeStyle = radial;
+	ctx.fillStyle = radial;
+
+
+	ctx.save();
+	ctx.beginPath();
+	//ctx.strokeStyle = '#6ABDF1';
+	ctx.lineWidth = 16;
+	ctx.lineCap = 'round'
+	ctx.arc(canvas.width/2,canvas.height/2,92,0,Math.PI/180*deg,false)
+	ctx.stroke()
+
+	//外圆弧
+	ctx.save();
+	ctx.beginPath();
+	// ctx.strokeStyle = '#D2EBFA';
+	ctx.lineWidth = 4;
+	ctx.lineCap = 'round'
+	ctx.arc(canvas.width/2,canvas.height/2,110,0,Math.PI/180*deg,false)
+	ctx.stroke()
+
+	//小圆点
+	ctx.save();
+	ctx.beginPath();
+	// ctx.fillStyle = '#6ABDF1';
+	ctx.arc(canvas.width/2+110*Math.cos(Math.PI/180*deg),canvas.height/2+110*Math.sin(Math.PI/180*deg),4,0,Math.PI*2,false)
+	ctx.fill()
+
+
+	//文本
+	num+= 0.28;
+	if(num >= 100){
+		num = 100
+	}
+	ctx.beginPath();
+	ctx.fillStyle = '#6ABDF1';
+	ctx.textAlign = 'center';
+	ctx.textBaseline = 'middle';
+	ctx.font = '30px 楷体'
+	ctx.fillText(Math.floor(num)+'%',canvas.width/2,canvas.height/2);
+	
+}, 20)
+
+
+	</script>
+	
+</body>
+</html>
